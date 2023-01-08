@@ -66,8 +66,9 @@ namespace Worker
                 {
                     var allTickers = await _getStockTicker.GetAllAsync();
 
-                    //uncomment to seed your database with the result - it's dumb and will insert duplicates so delete the records manually first
-                    //await _seedSymbolsCommand.ExecuteAsync(allTickers);
+                    // uncomment to seed your database with the result - it's dumb and will insert duplicates so delete the records manually first
+                    // TODO: make this seed command optional
+                    await _seedSymbolsCommand.ExecuteAsync(allTickers);
 
                     Console.WriteLine($"Success - there are {allTickers.Count} supported tickers.");
                 }

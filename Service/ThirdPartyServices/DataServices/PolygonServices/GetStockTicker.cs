@@ -35,8 +35,11 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
             var httpClient = _httpClientFactory.CreateClient();
             string apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.Tickers}{FILTER_AND_SORTING}";
 
-            while(apiUrl != null)
+            //TODO for a free account, you only get 5 requests per minute 
+            var count = 1;
+            while(apiUrl != null && count < 5)
             {
+                count++;
                 //there are more results as long as next_url is not null, chain call with this appending &yourapikey
                 var response = await httpClient.GetAsync($"{apiUrl}&apiKey={PolygonSettings.ApiKey}");
                 var tickersApiResponse = await response.Content.ReadAsStringAsync();
