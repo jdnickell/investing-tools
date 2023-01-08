@@ -1,0 +1,16 @@
+﻿
+1. Define a model (for example ,this should probably be an objet that has a Good/Bad/Average type and a Title/Summary about why it's that type and the DateTime that the info was gathered)
+example :
+
+public class MarketConditionsModel
+bool IsGood
+string ReasonTitle
+string ReasonSummary
+DateTime ConditionsDateTime
+
+2. Decide how you'll determine this information, maybe some api exists or initially it could just be manual user input 
+
+3. Alert the user somehow
+
+4. Later we'll use this to stop processing things - we wouldn't want to try and make trades based on our previous assumptions if crazy shit was happening one day. 
+
