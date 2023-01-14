@@ -24,7 +24,7 @@ namespace Service.Services.SymbolServices
 
         public async Task<List<Symbol>> GetListAsync()
         {
-            var symbols = await _tradesContext.Symbol.Where(x => x.SymbolTypeId == (int)SymbolType.Stock).ToListAsync();
+            var symbols = await _tradesContext.Symbol.Where(x => x.SymbolTypeId == (int)SymbolType.Stock).Take(3).ToListAsync();
             return symbols;
         }
     }

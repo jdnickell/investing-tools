@@ -1,8 +1,9 @@
-﻿using Service.Services.AfterHoursServices.Models;
+﻿using Microsoft.Extensions.Logging;
+using Service.Services.AfterHoursServices.Models;
 using Service.Services.ExtendedHoursServices;
 using Service.Services.SymbolServices;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Service.ThirdPartyServices.DataServices.PolygonServices
@@ -11,14 +12,17 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
     {
         private readonly IGetSymbols _getSymbols;
         private readonly IGetOpenClose _getOpenClose;
+        private readonly ILogger<GetPostMarketBiggestMovers> _logger;
 
-        const int POSITIVE_GAIN_PERCENT_THRESHOLD = 10;
+        const int POSITIVE_GAIN_PERCENT_THRESHOLD = 0;
 
         public GetPostMarketBiggestMovers(IGetSymbols getSymbols
-            , IGetOpenClose getOpenClose)
+            , IGetOpenClose getOpenClose
+            , ILogger<GetPostMarketBiggestMovers> logger)
         {
             _getSymbols = getSymbols;
             _getOpenClose = getOpenClose;
+            _logger = logger;
         }
 
         public async Task<List<DailyOpenCloseResult>> GetListAsync(string openCloseDate)
@@ -38,9 +42,9 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
                     if (percentChange >= POSITIVE_GAIN_PERCENT_THRESHOLD)
                         dailyOpenCloseResultAboveThreshold.Add(openClose);
                 }
-                catch
+                catch(Exception getOpenCloseException)
                 {
-                    //todo logging
+                    _logger.LogError(getOpenCloseException, "Error getting open/close results");
                 }
             }
 
