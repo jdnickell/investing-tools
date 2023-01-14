@@ -9,7 +9,7 @@
         public float high { get; set; }
         public float low { get; set; }
         public float close { get; set; }
-        public int volume { get; set; }
+        public float volume { get; set; }
         public float afterHours { get; set; }
         public float preMarket { get; set; }
     }

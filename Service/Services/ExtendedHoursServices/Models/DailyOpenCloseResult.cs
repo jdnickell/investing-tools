@@ -13,6 +13,6 @@ namespace Service.Services.AfterHoursServices.Models
         public decimal PriceClose { get; set; }
         public decimal PriceAfterHours { get; set; }
         public decimal PricePreMarket { get; set; }
-        public int Volume { get; set; }
+        public decimal Volume { get; set; }
     }
 }

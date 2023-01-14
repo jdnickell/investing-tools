@@ -41,7 +41,7 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
                 PricePreMarket = (decimal)dailyOpenCloseResponse.preMarket,
                 RequestedDate = DateTime.ParseExact(dailyOpenCloseResponse.from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
                 Symbol = dailyOpenCloseResponse.symbol,
-                Volume = dailyOpenCloseResponse.volume
+                Volume = (decimal)dailyOpenCloseResponse.volume
             };
 
             return dailyOpenCloseResult;

@@ -21,6 +21,7 @@ namespace Service.Services.ExtendedHoursServices
             _getPostMarketBiggestMovers = getPostMarketBiggestMovers;
         }
 
+        /// <inheritdoc />
         public async Task ExecuteAsync(string openCloseDate)
         {
             var marketDate = DateTime.Parse(openCloseDate).Date;
@@ -72,6 +73,15 @@ namespace Service.Services.ExtendedHoursServices
 
     public interface IProcessPostMarketBiggestMoversCommand
     {
+        /// <summary>
+        /// This command does the following:
+        ///     1.) Find symbols that have increased/decreased a significant amount (configurable) after hours.
+        ///     2.) Saves results
+        ///     3.) Gets news for each symbol result
+        ///     4.) Saves news results
+        /// </summary>
+        /// <param name="openCloseDate"></param>
+        /// <returns></returns>
         Task ExecuteAsync(string openCloseDate);
     }
 }
