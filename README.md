@@ -18,3 +18,13 @@ We apparently didn't document or add tests for anything 🧠
 - Run the project, choose 1 - this will populate your Symbol table with current stock ticker symbols.
 
 From here you can try the other commands and debug figure out what each command does. Notice the hard coded date in Worker.cs.
+
+1/15/23 - Example strategy use case
+
+- At 8pm central time, run (3) GET_POST_MARKET_BIGGEST_MOVERS
+- Review results, looking for relevant positive news that contributed to rise.
+- The user manually chooses any to continue with the following day.
+- The next day, 10-15 minutes before open, capture any that have cooled down - meaning they increased by < 10% during pre-market
+- Buy at open
+- Plan to sell within the first hour, take any reasonable gain (%?) or sell after a 10% decline
+  - Also watch SPY, and sell if there's a 10% decline
