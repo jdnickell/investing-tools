@@ -12,6 +12,8 @@ namespace Service.Services.ExtendedHoursServices
         private readonly IGetSymbolNews _getSymbolNews;
         private readonly IGetPostMarketBiggestMovers _getPostMarketBiggestMovers;
 
+        const int DAYS_OF_NEWS_TO_GET = 7;
+
         public ProcessPostMarketBiggestMoversCommand(TradesContext tradesContext
             , IGetSymbolNews getSymbolNews
             , IGetPostMarketBiggestMovers getPostMarketBiggestMovers)
@@ -24,7 +26,7 @@ namespace Service.Services.ExtendedHoursServices
         /// <inheritdoc />
         public async Task ExecuteAsync(string openCloseDate)
         {
-            var marketDate = DateTime.Parse(openCloseDate).Date;
+            var marketDate = DateTime.Parse(openCloseDate).Date.AddDays(-DAYS_OF_NEWS_TO_GET);
             var biggestMovers = await _getPostMarketBiggestMovers.GetListAsync(openCloseDate);
 
             var extendedHoursBiggestMovers = new List<ExtendedHoursBiggestMovers>();
@@ -78,7 +80,7 @@ namespace Service.Services.ExtendedHoursServices
         ///     1.) Find symbols that have increased/decreased a significant amount (configurable) after hours.
         ///     2.) Saves results
         ///     3.) Gets news for each symbol result
-        ///     4.) Saves news results
+        ///     4.) Saves news results for each symbol for 1 week.
         /// </summary>
         /// <param name="openCloseDate"></param>
         /// <returns></returns>
