@@ -12,8 +12,6 @@ namespace Service.Services.ExtendedHoursServices
         private readonly IGetSymbolNews _getSymbolNews;
         private readonly IGetPostMarketBiggestMovers _getPostMarketBiggestMovers;
 
-        const int DAYS_OF_NEWS_TO_GET = 7;
-
         public ProcessPostMarketBiggestMoversCommand(TradesContext tradesContext
             , IGetSymbolNews getSymbolNews
             , IGetPostMarketBiggestMovers getPostMarketBiggestMovers)
@@ -26,7 +24,7 @@ namespace Service.Services.ExtendedHoursServices
         /// <inheritdoc />
         public async Task ExecuteAsync(string openCloseDate)
         {
-            var marketDate = DateTime.Parse(openCloseDate).Date.AddDays(-DAYS_OF_NEWS_TO_GET);
+            var marketDate = DateTime.Parse(openCloseDate).Date;
             var biggestMovers = await _getPostMarketBiggestMovers.GetListAsync(openCloseDate);
 
             var extendedHoursBiggestMovers = new List<ExtendedHoursBiggestMovers>();
