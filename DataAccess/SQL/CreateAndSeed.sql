@@ -8,9 +8,9 @@ GO
 CREATE TABLE [dbo].[ExtendedHoursBiggestMovers](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[SymbolId] [int] NOT NULL,
-	[PriceAfterHours] [decimal](18, 0) NOT NULL,
-	[PriceOpen] [decimal](18, 0) NOT NULL,
-	[PriceClose] [decimal](18, 0) NOT NULL,
+	[PriceAfterHours] [decimal](18, 2) NOT NULL,
+	[PriceOpen] [decimal](18, 2) NOT NULL,
+	[PriceClose] [decimal](18, 2) NOT NULL,
 	[MarketDate] [date] NOT NULL,
 	[CreatedDateTimeUtc] [datetime] NOT NULL,
  CONSTRAINT [PK_ExtendedHoursBiggestMovers] PRIMARY KEY CLUSTERED 
@@ -110,14 +110,14 @@ GO
 CREATE TABLE [dbo].[SymbolNews](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[SymbolId] [int] NOT NULL,
-	[PublisherName] [varchar](50) NULL,
-	[PublisherUrl] [varchar](200) NULL,
-	[Title] [varchar](200) NULL,
-	[Summary] [varchar](max) NULL,
-	[Author] [varchar](200) NULL,
+	[PublisherName] [varchar](500) NULL,
+	[PublisherUrl] [varchar](MAX) NULL,
+	[Title] [varchar](500) NULL,
+	[Summary] [varchar](MAX) NULL,
+	[Author] [varchar](500) NULL,
 	[PublishedDateTime] [datetime] NULL,
-	[Url] [varchar](200) NULL,
-	[RelevantSymbolsCSV] [varchar](max) NULL,
+	[Url] [varchar](MAX) NULL,
+	[RelevantSymbolsCSV] [varchar](MAX) NULL,
 	[CreatedDateTime] [datetime] NOT NULL,
  CONSTRAINT [PK_SymbolNews] PRIMARY KEY CLUSTERED 
 (
