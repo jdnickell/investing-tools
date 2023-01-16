@@ -41,7 +41,7 @@ namespace Worker
             _processPostMarketBiggestMoversCommand = processPostMarketBiggestMoversCommand;
         }
 
-        private void PromptUser()
+        private void PromptUserMainMenu()
         {
             //Someone make a UI plz
             Console.WriteLine("What do you want to do?");
@@ -57,42 +57,43 @@ namespace Worker
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                PromptUser();
+                PromptUserMainMenu();
 
                 var userCommand = Console.ReadLine();
 
-                if (string.Equals(userCommand, Resources.GET_ALL_STOCK_TICKERS.CommandId.ToString(), StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(userCommand, Resources.GET_ALL_STOCK_TICKERS.CommandName, StringComparison.OrdinalIgnoreCase))
+                // Populate local db with all known stock tickers - run this one time before any other commands.
+                if (string.Equals(userCommand, Resources.SEED_LOCAL_DB_WITH_TICKERS.CommandId.ToString(), StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(userCommand, Resources.SEED_LOCAL_DB_WITH_TICKERS.CommandName, StringComparison.OrdinalIgnoreCase))
                 {
                     var allTickers = await _getStockTicker.GetAllAsync();
-
-                    // uncomment to seed your database with the result - it's dumb and will insert duplicates so delete the records manually first
-                    // TODO: make this seed command optional
                     await _seedSymbolsCommand.ExecuteAsync(allTickers);
 
                     Console.WriteLine($"Success - there are {allTickers.Count} supported tickers.");
                 }
 
-                if (string.Equals(userCommand, Resources.GET_OPEN_CLOSE_FOR_TEST_SYMBOL_GME.CommandId.ToString(), StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(userCommand, Resources.GET_OPEN_CLOSE_FOR_TEST_SYMBOL_GME.CommandName, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(userCommand, Resources.GET_OPEN_CLOSE_FOR_SYMBOL.CommandId.ToString(), StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(userCommand, Resources.GET_OPEN_CLOSE_FOR_SYMBOL.CommandName, StringComparison.OrdinalIgnoreCase))
                 {
-                    var testGMEDate = "2021-06-04";
-                    var gmeOpenClose = await _getOpenClose.GetAsync("GME", testGMEDate);
+                    Console.WriteLine("Enter a symbol:");
+                    var userEnteredSymbol = Console.ReadLine().ToUpper();
 
-                    Console.WriteLine($"Open/Close data for GME on {testGMEDate}: {JsonSerializer.Serialize(gmeOpenClose)}");
+                    Console.WriteLine("Enter a market date (yyyy-MM-dd):");
+                    var userEnteredMarketDate = Console.ReadLine();
+
+                    var openClose = await _getOpenClose.GetAsync(userEnteredSymbol, userEnteredMarketDate);
+
+                    Console.WriteLine($"Open/Close data for GME on {userEnteredMarketDate}:");
+                    Console.WriteLine($"{JsonSerializer.Serialize(openClose)}");
                 }
 
                 if (string.Equals(userCommand, Resources.GET_POST_MARKET_BIGGEST_MOVERS.CommandId.ToString(), StringComparison.OrdinalIgnoreCase)
                     || string.Equals(userCommand, Resources.GET_POST_MARKET_BIGGEST_MOVERS.CommandName, StringComparison.OrdinalIgnoreCase))
                 {
-                    //check for weekend or holiday 
                     var utcStartTime = DateTime.UtcNow;
-                    var timeUtc = utcStartTime.AddDays(-4);
-                    TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                    DateTime easternTime = TimeZoneInfo.ConvertTimeFromUtc(timeUtc, easternZone);
-                    var testOpenCloseDate = easternTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-                    await _processPostMarketBiggestMoversCommand.ExecuteAsync(testOpenCloseDate);
+                    Console.WriteLine("Enter a market date (yyyy-MM-dd):");
+                    var userEnteredMarketDate = Console.ReadLine();
+                    await _processPostMarketBiggestMoversCommand.ExecuteAsync(userEnteredMarketDate);
 
                     //var postMarketBiggestMovers = await _getPostMarketBiggestMovers.GetListAsync(testOpenCloseDate);
 

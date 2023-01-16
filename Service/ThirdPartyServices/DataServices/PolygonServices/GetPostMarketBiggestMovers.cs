@@ -14,7 +14,7 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
         private readonly IGetOpenClose _getOpenClose;
         private readonly ILogger<GetPostMarketBiggestMovers> _logger;
 
-        const int POSITIVE_GAIN_PERCENT_THRESHOLD = 0;
+        const int POSITIVE_GAIN_PERCENT_THRESHOLD = 7;
 
         public GetPostMarketBiggestMovers(IGetSymbols getSymbols
             , IGetOpenClose getOpenClose
@@ -35,7 +35,11 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
                 try
                 {
                     var openClose = await _getOpenClose.GetAsync(ticker.Symbol1, openCloseDate);
-                    openClose.SymbolId = ticker.Id; //todo: this was lazy, it should be mapped from the result to another domain that then includes this ID
+
+                    // skip those we couldn't get a result for
+                    if (openClose == null) continue;
+
+                    openClose.SymbolId = ticker.Id;
 
                     var percentChange = GetPercentChange(openClose.PriceClose, openClose.PriceAfterHours);
 

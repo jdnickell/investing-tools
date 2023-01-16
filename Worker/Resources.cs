@@ -4,8 +4,8 @@ namespace Worker
 {
     public static class Resources
     {
-        public static UserInputCommand GET_ALL_STOCK_TICKERS = new UserInputCommand { CommandId = 1, CommandName="GetAllTickers" };
-        public static UserInputCommand GET_OPEN_CLOSE_FOR_TEST_SYMBOL_GME = new UserInputCommand { CommandId = 2, CommandName = "GetOpenCloseForTestSymbol" };
+        public static UserInputCommand SEED_LOCAL_DB_WITH_TICKERS = new UserInputCommand { CommandId = 1, CommandName="SeedLocalDbTickers" };
+        public static UserInputCommand GET_OPEN_CLOSE_FOR_SYMBOL = new UserInputCommand { CommandId = 2, CommandName = "GetOpenCloseForSymbol" };
         public static UserInputCommand GET_POST_MARKET_BIGGEST_MOVERS = new UserInputCommand { CommandId = 3, CommandName = "GetPostMarketBiggestMovers" };
         public static UserInputCommand GET_NEWS_FOR_TEST_SYMBOL_GME = new UserInputCommand { CommandId = 4, CommandName = "GetSymbolNews" };
 
@@ -13,8 +13,8 @@ namespace Worker
 
         public static List<UserInputCommand> GetUserInputCommands()
         {
-            UserInputCommands.Add(GET_ALL_STOCK_TICKERS);
-            UserInputCommands.Add(GET_OPEN_CLOSE_FOR_TEST_SYMBOL_GME);
+            UserInputCommands.Add(SEED_LOCAL_DB_WITH_TICKERS);
+            UserInputCommands.Add(GET_OPEN_CLOSE_FOR_SYMBOL);
             UserInputCommands.Add(GET_POST_MARKET_BIGGEST_MOVERS);
             UserInputCommands.Add(GET_NEWS_FOR_TEST_SYMBOL_GME);
 

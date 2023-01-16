@@ -24,7 +24,8 @@ namespace Service.Services.SymbolServices
 
         public async Task<List<Symbol>> GetListAsync()
         {
-            var symbols = await _tradesContext.Symbol.Where(x => x.SymbolTypeId == (int)SymbolType.Stock).Take(3).ToListAsync();
+            //TODO: other query objects are returning a dto instead of the DataAccess model
+            var symbols = await _tradesContext.Symbol.Where(x => x.SymbolTypeId == (int)SymbolType.Stock).ToListAsync();
             return symbols;
         }
     }

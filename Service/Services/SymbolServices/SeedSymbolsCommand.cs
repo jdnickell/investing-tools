@@ -2,8 +2,8 @@
 using DataAccess.Enums;
 using Service.Services.SymbolServices.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service.Services.SymbolServices
 {
@@ -16,9 +16,17 @@ namespace Service.Services.SymbolServices
             _tradesContext = tradesContext;
         }
 
+        /// <inheritdoc/>
         public async Task ExecuteAsync(List<StockTickerResult> stockTickerResults)
         {
             var symbols = new List<Symbol>();
+
+            var isAnyExistingSymbols = await _tradesContext.Symbol.FirstOrDefaultAsync();
+            if (isAnyExistingSymbols != null)
+            {
+                // except for now, there's no duplicate or update logic in place
+                throw new System.Exception("Symbol data already exists, purge your local data in order to seed again.");
+            }
 
             foreach(var stockTickerResult in stockTickerResults)
             {
@@ -35,6 +43,14 @@ namespace Service.Services.SymbolServices
         }
     }
 
+    /// <summary>
+    /// Creates and saves a <see cref="Symbol"/> record for each <see cref="StockTickerResult"/>.
+    /// TODO: There's no update logic and no check before saving, so running this multiple times will result in duplicates.
+    /// This would probably be something that ran weekly, or optionally manually so that new or updated ticker information is captured.
+    /// At the moment just delete your local data and re-run the seed command to get updated info
+    /// </summary>
+    /// <param name="stockTickerResults"></param>
+    /// <returns></returns>
     public interface ISeedSymbolsCommand
     {
         Task ExecuteAsync(List<StockTickerResult> stockTickerResults);
