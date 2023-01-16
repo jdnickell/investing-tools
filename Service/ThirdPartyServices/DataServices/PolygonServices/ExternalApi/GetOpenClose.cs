@@ -35,7 +35,7 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("OpenClose not found for Ticker", symbol);
+                _logger.LogInformation("OpenClose not found for Ticker {Symbol}", symbol);
                 return null;
             }
 
