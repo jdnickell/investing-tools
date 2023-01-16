@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Worker
         private readonly IGetOpenClose _getOpenClose;
         private readonly IGetSymbolNews _getSymbolNews;
         private readonly IGetStockTicker _getStockTicker;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISeedSymbolsCommand _seedSymbolsCommand;
         private readonly IGetPostMarketBiggestMovers _getPostMarketBiggestMovers;
         private readonly IProcessPostMarketBiggestMoversCommand _processPostMarketBiggestMoversCommand;
@@ -28,6 +30,7 @@ namespace Worker
             , IGetOpenClose getOpenClose
             , IGetSymbolNews getSymbolNews
             , IGetStockTicker getStockTicker
+            , IHttpClientFactory httpClientFactory
             , ISeedSymbolsCommand seedSymbolsCommand
             , IGetPostMarketBiggestMovers getPostMarketBiggestMovers
             , IProcessPostMarketBiggestMoversCommand processPostMarketBiggestMoversCommand)
@@ -36,6 +39,7 @@ namespace Worker
             _getOpenClose = getOpenClose;
             _getSymbolNews = getSymbolNews;
             _getStockTicker = getStockTicker;
+            _httpClientFactory = httpClientFactory;
             _seedSymbolsCommand = seedSymbolsCommand;
             _getPostMarketBiggestMovers = getPostMarketBiggestMovers;
             _processPostMarketBiggestMoversCommand = processPostMarketBiggestMoversCommand;
@@ -80,7 +84,8 @@ namespace Worker
                     Console.WriteLine("Enter a market date (yyyy-MM-dd):");
                     var userEnteredMarketDate = Console.ReadLine();
 
-                    var openClose = await _getOpenClose.GetAsync(userEnteredSymbol, userEnteredMarketDate);
+                    var httpClient = _httpClientFactory.CreateClient();
+                    var openClose = await _getOpenClose.GetAsync(userEnteredSymbol, userEnteredMarketDate, httpClient);
 
                     Console.WriteLine($"Open/Close data for GME on {userEnteredMarketDate}:");
                     Console.WriteLine($"{JsonSerializer.Serialize(openClose)}");

@@ -4,6 +4,7 @@ using Service.Services.ExtendedHoursServices;
 using Service.Services.SymbolServices;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Service.ThirdPartyServices.DataServices.PolygonServices
@@ -12,16 +13,19 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
     {
         private readonly IGetSymbols _getSymbols;
         private readonly IGetOpenClose _getOpenClose;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<GetPostMarketBiggestMovers> _logger;
 
         const int POSITIVE_GAIN_PERCENT_THRESHOLD = 7;
 
         public GetPostMarketBiggestMovers(IGetSymbols getSymbols
             , IGetOpenClose getOpenClose
+            , IHttpClientFactory httpClientFactory
             , ILogger<GetPostMarketBiggestMovers> logger)
         {
             _getSymbols = getSymbols;
             _getOpenClose = getOpenClose;
+            _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
 
@@ -29,12 +33,13 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
         {
             var tickers = await _getSymbols.GetListAsync();
             var dailyOpenCloseResultAboveThreshold = new List<DailyOpenCloseResult>();
+            var httpClient = _httpClientFactory.CreateClient();
 
-            foreach(var ticker in tickers)
+            foreach (var ticker in tickers)
             {
                 try
                 {
-                    var openClose = await _getOpenClose.GetAsync(ticker.Symbol1, openCloseDate);
+                    var openClose = await _getOpenClose.GetAsync(ticker.Symbol1, openCloseDate, httpClient);
 
                     // skip those we couldn't get a result for
                     if (openClose == null) continue;

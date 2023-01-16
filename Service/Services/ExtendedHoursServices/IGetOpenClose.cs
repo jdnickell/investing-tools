@@ -1,4 +1,5 @@
 ﻿using Service.Services.AfterHoursServices.Models;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Service.Services.ExtendedHoursServices
@@ -10,7 +11,8 @@ namespace Service.Services.ExtendedHoursServices
         /// </summary>
         /// <param name="symbol"></param>
         /// <param name="openCloseDate"></param>
+        /// <param name="httpClient"></param>
         /// <returns></returns>
-        Task<DailyOpenCloseResult> GetAsync(string symbol, string openCloseDate);
+        Task<DailyOpenCloseResult> GetAsync(string symbol, string openCloseDate, HttpClient httpClient);
     }
 }

@@ -13,24 +13,20 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
 {
     public class GetOpenClose : IGetOpenClose
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<GetOpenClose> _logger;
 
         //When true, results are NOT adjusted for splits
         private static readonly bool unadjustedForSplit = true;
 
-        public GetOpenClose(IHttpClientFactory httpClientFactory
-            , ILogger<GetOpenClose> logger)
+        public GetOpenClose(ILogger<GetOpenClose> logger)
         {
-            _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
 
-        public async Task<DailyOpenCloseResult> GetAsync(string symbol, string openCloseDate)
+        public async Task<DailyOpenCloseResult> GetAsync(string symbol, string openCloseDate, HttpClient httpClient)
         {
             string apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.OpenClose}/{symbol}/{openCloseDate}?unadjusted={unadjustedForSplit}&apiKey={PolygonSettings.ApiKey}";
 
-            var httpClient = _httpClientFactory.CreateClient();
             var response = await httpClient.GetAsync(apiUrl);
 
             if (!response.IsSuccessStatusCode)
