@@ -28,3 +28,15 @@ From here you can try the other commands and debug figure out what each command 
 - Buy at open
 - Plan to sell within the first hour, take any reasonable gain (%?) or sell after a 10% decline
   - Also watch SPY, and sell if there's a 10% decline
+
+
+# Services
+These are services objects that implement ThirdPartyDataServices and where we create response models that we want to map 3rd party apis to by calling the 3rd party query objects.
+The objective is for this business logic to depend on the ThirdPartyServices, but be interchangeable among different data providers.
+For example, at the moment they implement only PolygonServices, but we want to decouple from a specific provider as much as possible. 
+It's not perfect, but try to keep this in mind since we've seen providers rise and fall frequently in terms of reliability and price.
+
+# ThirdPartyServices
+These are the service objects that are specific to a data provider. 
+These query objects make the api requests and return the deserialized 3rd party api response objects.
+The response objects are found in EdternalApi/Domains
