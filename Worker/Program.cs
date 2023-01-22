@@ -29,6 +29,7 @@ namespace Worker
 
                     services.AddDbContext<TradesContext>(options => options.UseSqlServer(ConnectionStrings.TradesConnectionString), ServiceLifetime.Singleton);
 
+                    services.AddSingleton<IIsBiggestMover, IsBiggestMover>();
                     services.AddSingleton<ISendDiscordMessageCommand, SendDiscordMessageCommand>();
 
                     services.AddTransient<IGetSymbols, GetSymbols>();

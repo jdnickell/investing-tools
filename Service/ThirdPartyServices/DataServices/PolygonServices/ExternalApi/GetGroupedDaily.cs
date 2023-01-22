@@ -4,7 +4,6 @@ using Service.Services.ConfigurationServices;
 using Service.Services.ExtendedHoursServices;
 using Service.Services.ExtendedHoursServices.Models;
 using Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.Domains;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,18 +12,22 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
 {
     public class GetGroupedDaily : IGetGroupedDaily
     {
+        private readonly IIsBiggestMover _isBiggestMover;
         private readonly ILogger<GetGroupedDaily> _logger;
-        private static readonly bool unadjustedForSplit = true;
 
-        public GetGroupedDaily(ILogger<GetGroupedDaily> logger)
+        private static readonly bool UNADJUSTED_FOR_SPLIT = true;
+
+        public GetGroupedDaily(ILogger<GetGroupedDaily> logger
+            , IIsBiggestMover isBiggestMover)
         {
+            _isBiggestMover = isBiggestMover;
             _logger = logger;
         }
 
         public async Task<List<GroupedDailyResult>> GetListAsync(string marketDate, HttpClient httpClient)
         {
 
-            var apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.GroupedDaily}/{marketDate}?unadjusted={unadjustedForSplit}&apiKey={PolygonSettings.ApiKey}";
+            var apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.GroupedDaily}/{marketDate}?unadjusted={UNADJUSTED_FOR_SPLIT}&apiKey={PolygonSettings.ApiKey}";
 
             var response = await httpClient.GetAsync(apiUrl);
 
@@ -35,13 +38,34 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
             }
 
             var apiResponse = await response.Content.ReadAsStringAsync();
-            var dailyOpenCloseResponse = JsonConvert.DeserializeObject<GroupedDailyResponse>(apiResponse);
+            var groupedDailyResponses = JsonConvert.DeserializeObject<GroupedDailyResponse>(apiResponse);
 
-            //TODO
-            //1: This model isn't quite right and deserializing fails, compare and fix the GroupedDailyResponse model
-            //2: Then build a list of GroupedDailyResult from the GroupedDailyResponse
-            //3: return the list
-            throw new NotImplementedException();
+            var groupedDailyResults = new List<GroupedDailyResult>();
+
+            foreach (var groupedDailyResult in groupedDailyResponses.results)
+            {
+                if (!_isBiggestMover.Is(groupedDailyResult.c, groupedDailyResult.h))
+                {
+                    continue;
+                }
+                //TODO: define additional parameters to narrow down this list before making the GetOpenClose request.
+
+                groupedDailyResults.Add(new GroupedDailyResult
+                {
+                    PriceClose = groupedDailyResult.c,
+                    PriceHigh = groupedDailyResult.h,
+                    PriceLow = groupedDailyResult.l,
+                    PriceOpen = groupedDailyResult.o,
+                    PriceWeightedAverage = groupedDailyResult.vw,
+                    Symbol = groupedDailyResult.T,
+                    SymbolId = 0, // TODO At the end, map this from db so we only query relevant ones
+                    TransactionsCount = groupedDailyResult.n,
+                    Volume = groupedDailyResult.v
+                });
+            }
+
+            //TODO - set the SymbolId
+            return groupedDailyResults;
         }
     }
 }

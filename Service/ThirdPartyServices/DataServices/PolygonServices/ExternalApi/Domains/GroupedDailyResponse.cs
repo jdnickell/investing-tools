@@ -1,4 +1,6 @@
-﻿namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.Domains
+﻿using System.Collections.Generic;
+
+namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.Domains
 {
     public class GroupedDailyResponse
     {
@@ -13,7 +15,7 @@
         /// <summary>
         /// List of <see cref="GroupedDailyResults"/>
         /// </summary>
-        public GroupedDailyResults results { get; set; } = new GroupedDailyResults();
+        public List<GroupedDailyResults> results { get; set; } = new List<GroupedDailyResults>();
     }
 
     /// <summary>
