@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -18,10 +17,10 @@ namespace Worker
         private readonly ILogger<Worker> _logger;
         private readonly IGetOpenClose _getOpenClose;
         private readonly IGetSymbolNews _getSymbolNews;
-        private readonly IGetStockTicker _getStockTicker;
+        private readonly IGetStockTicker _getStockTicker;        
+        private readonly IGetGroupedDaily _getGroupedDaily;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ISeedSymbolsCommand _seedSymbolsCommand;
-        private readonly IGetPostMarketBiggestMovers _getPostMarketBiggestMovers;
         private readonly IProcessPostMarketBiggestMoversCommand _processPostMarketBiggestMoversCommand;
 
         private readonly List<Resources.UserInputCommand> userInputCommands = Resources.GetUserInputCommands();
@@ -30,18 +29,18 @@ namespace Worker
             , IGetOpenClose getOpenClose
             , IGetSymbolNews getSymbolNews
             , IGetStockTicker getStockTicker
+            , IGetGroupedDaily getGroupedDaily
             , IHttpClientFactory httpClientFactory
             , ISeedSymbolsCommand seedSymbolsCommand
-            , IGetPostMarketBiggestMovers getPostMarketBiggestMovers
             , IProcessPostMarketBiggestMoversCommand processPostMarketBiggestMoversCommand)
         {
             _logger = logger;
             _getOpenClose = getOpenClose;
             _getSymbolNews = getSymbolNews;
             _getStockTicker = getStockTicker;
+            _getGroupedDaily = getGroupedDaily;
             _httpClientFactory = httpClientFactory;
             _seedSymbolsCommand = seedSymbolsCommand;
-            _getPostMarketBiggestMovers = getPostMarketBiggestMovers;
             _processPostMarketBiggestMoversCommand = processPostMarketBiggestMoversCommand;
         }
 
@@ -99,28 +98,6 @@ namespace Worker
                     Console.WriteLine("Enter a market date (yyyy-MM-dd):");
                     var userEnteredMarketDate = Console.ReadLine();
                     await _processPostMarketBiggestMoversCommand.ExecuteAsync(userEnteredMarketDate);
-
-                    //var postMarketBiggestMovers = await _getPostMarketBiggestMovers.GetListAsync(testOpenCloseDate);
-
-                    //Console.WriteLine($"The following tickers gained more than 10% after hours on {testOpenCloseDate}");
-
-                    //foreach (var bigMover in postMarketBiggestMovers)
-                    //{
-                    //    var percentChange = ((bigMover.PriceAfterHours - bigMover.PriceClose) / bigMover.PriceClose) * 100;
-                    //    Console.WriteLine($"Symbol: {bigMover.Symbol} Percent Change: {percentChange:F} After Hours: {bigMover.PriceAfterHours} Close: {bigMover.PriceClose} Open: {bigMover.PriceOpen}");
-                    //}
-
-                    //Console.WriteLine("Getting news results for each symbol...");
-                    //foreach (var bigMover in postMarketBiggestMovers)
-                    //{
-                    //    var newsResults = await _getSymbolNews.GetListAsync(bigMover.Symbol, testOpenCloseDate);
-
-                    //    Console.WriteLine(bigMover.Symbol);
-                    //    foreach (var newsResult in newsResults)
-                    //    {
-                    //        Console.WriteLine($"Published by {newsResult.PublisherName} at {newsResult.PublishedDateTime} Title: {newsResult.Title}, {newsResult.Summary}");
-                    //    }
-                    //}
 
                     Console.WriteLine($"Started: {utcStartTime}. Finished: {DateTime.Now}");
                 }

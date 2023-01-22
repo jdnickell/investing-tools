@@ -25,7 +25,7 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi
 
         public async Task<DailyOpenCloseResult> GetAsync(string symbol, string openCloseDate, HttpClient httpClient)
         {
-            string apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.OpenClose}/{symbol}/{openCloseDate}?unadjusted={unadjustedForSplit}&apiKey={PolygonSettings.ApiKey}";
+            var apiUrl = $"{PolygonSettings.BaseApiUrl}/{Resources.Urls.OpenClose}/{symbol}/{openCloseDate}?unadjusted={unadjustedForSplit}&apiKey={PolygonSettings.ApiKey}";
 
             var response = await httpClient.GetAsync(apiUrl);
 

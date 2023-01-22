@@ -31,6 +31,9 @@ namespace Service.ThirdPartyServices.DataServices.PolygonServices
 
         public async Task<List<DailyOpenCloseResult>> GetListAsync(string openCloseDate)
         {
+            //TODO: Use the GetGroupedDaily query object to get a list of results, then iterate through those and get percentage change instead.
+            // The response is ~ 1.3mb so we might need to do batching and find percentage change during deserialization instead. 
+
             var tickers = await _getSymbols.GetListAsync();
             var dailyOpenCloseResultAboveThreshold = new List<DailyOpenCloseResult>();
             var httpClient = _httpClientFactory.CreateClient();

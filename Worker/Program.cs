@@ -38,10 +38,11 @@ namespace Worker
                     services.AddTransient<IProcessPostMarketBiggestMoversCommand, ProcessPostMarketBiggestMoversCommand>();
 
                     // our plan was to make this more generic in case we didn't want to use Polygon at some point
-                    services.AddTransient<IGetPostMarketBiggestMovers, Service.ThirdPartyServices.DataServices.PolygonServices.GetPostMarketBiggestMovers>();
                     services.AddTransient<IGetStockTicker, Service.ThirdPartyServices.DataServices.PolygonServices.GetStockTicker>();
                     services.AddTransient<IGetOpenClose, Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.GetOpenClose>();
                     services.AddTransient<IGetSymbolNews, Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.GetSymbolNews>();
+                    services.AddTransient<IGetGroupedDaily, Service.ThirdPartyServices.DataServices.PolygonServices.ExternalApi.GetGroupedDaily>();
+                    services.AddTransient<IGetPostMarketBiggestMovers, Service.ThirdPartyServices.DataServices.PolygonServices.GetPostMarketBiggestMovers>();
 
                     services.AddHostedService<Worker>();
                 });
